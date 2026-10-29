@@ -1,4 +1,4 @@
-package main
+package rule
 
 // defaultRulesJSON содержит встроенный набор правил, который используется,
 // если файлы правил не найдены.
@@ -112,3 +112,18 @@ const defaultRulesJSON = `{
         }
       ]
     }`
+
+// DefaultRules загружает правила из встроенного набора по умолчанию.
+func DefaultRules() (*Rules, error) {
+	loader := NewLoader()
+
+	rules, err := loader.Parse([]byte(defaultRulesJSON), ".json")
+	if err != nil {
+		return nil, err
+	}
+	if err := rules.Validate(); err != nil {
+		return nil, err
+	}
+
+	return rules, nil
+}

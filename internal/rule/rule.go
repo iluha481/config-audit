@@ -3,6 +3,7 @@ package rule
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -68,6 +69,17 @@ func (m *Match) Validate() error {
 		return fmt.Errorf("%w: operator is required", ErrInvalidOperator)
 	}
 	m.Operator = Operator(op)
+
+	if m.Operator == OpRegex {
+		if len(m.Values) == 0 {
+			return fmt.Errorf("%w: regex requires values", ErrInvalidRules)
+		}
+		for _, pattern := range m.Values {
+			if _, err := regexp.Compile(pattern); err != nil {
+				return fmt.Errorf("%w: invalid regex %q: %w", ErrInvalidRules, pattern, err)
+			}
+		}
+	}
 
 	if len(m.Keys) == 0 && len(m.KeySuffixes) == 0 && m.Path == "" && len(m.Context) == 0 {
 		return fmt.Errorf("%w: match condition must specify keys, key_suffixes, path, or context",
