@@ -31,7 +31,7 @@ type cliConfig struct {
 }
 
 func main() {
-	os.Exit(run(os.Args[:1]))
+	os.Exit(run(os.Args[1:]))
 }
 
 // run выполняет команду и возвращает код завершения.
